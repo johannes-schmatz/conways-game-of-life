@@ -4,7 +4,12 @@ import java.util.function.Function;
 
 import local.pixy.conwaysgame.world.Chunk;
 
-public record BlockPos(int x, int y) {
+/**
+ * Describes a block's position.
+ * 
+ * @author pixy
+ */
+public BlockPos extends BasicVector{
 	public BlockPos add(BlockPos offset) {
 		return new BlockPos(this.x + offset.x, this.y + offset.y);
 	}

@@ -8,7 +8,7 @@ import local.pixy.conwaysgame.world.Chunk;
  * @author pixy
  *
  */
-public record ChunkPos(int x, int y) {
+public ChunkPos extends BasicVector {
 	public BlockPos toBlockPos() {
 		return new BlockPos(this.x * Chunk.SIZE, this.y * Chunk.SIZE);
 	}

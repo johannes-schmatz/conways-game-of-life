@@ -3,14 +3,14 @@ package local.pixy.conwaysgame.math;
 import local.pixy.conwaysgame.world.Chunk;
 
 /**
- * Describes a chunk position, with dimensions <code>Chunk.SIZE</code> on both
+ * Describes a chunk position, with dimensions {@code Chunk.SIZE} on both
  * axis.
  * 
  * @author pixy
  */
 public class ChunkPos extends BasicVector<ChunkPos> {
 	/**
-	 * Create a new {@link ChunkPos}.
+	 * Create a new {@linkplain ChunkPos}.
 	 * 
 	 * @param x The x-value of this instance.
 	 * @param y The y-value of this instance.
@@ -20,20 +20,20 @@ public class ChunkPos extends BasicVector<ChunkPos> {
 	}
 
 	/**
-	 * Function to get the chunks 0,0 as a {@link BlockPos}.
+	 * Function to get the chunks 0,0 as a {@linkplain BlockPos}.
 	 * 
-	 * @return The {@link BlockPos} that describes the chunk's origin.
+	 * @return The {@linkplain BlockPos} that describes the chunk's origin.
 	 */
 	public BlockPos toBlockPos() {
 		return new BlockPos(this.getX() * Chunk.SIZE, this.getY() * Chunk.SIZE);
 	}
 
 	/**
-	 * Function to get a absolute block {@link BlockPos} from a relative
-	 * {@link BlockPos} and the {@link ChunkPos} instance.
+	 * Function to get a absolute block {@linkplain BlockPos} from a relative
+	 * {@linkplain BlockPos} and the {@linkplain ChunkPos} instance.
 	 * 
-	 * @param offset The relative {@link BlockPos} from the origin of the chunk.
-	 * @return The absolute {@link BlockPos} value of the block.
+	 * @param offset The relative {@linkplain BlockPos} from the origin of the chunk.
+	 * @return The absolute {@linkplain BlockPos} value of the block.
 	 */
 	public BlockPos toBlockPos(BlockPos offset) {
 		return new BlockPos(this.getX() * Chunk.SIZE + offset.getX(), this.getY() * Chunk.SIZE + offset.getY());

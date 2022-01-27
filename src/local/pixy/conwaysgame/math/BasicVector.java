@@ -2,7 +2,7 @@ package local.pixy.conwaysgame.math;
 
 /**
  * @author pixy
- * @param <T> The type of the class that extends {@link BasicVector}.
+ * @param <T> The type of the class that extends {@linkplain BasicVector}.
  *
  */
 public abstract class BasicVector<T extends BasicVector<T>> {
@@ -78,11 +78,11 @@ public abstract class BasicVector<T extends BasicVector<T>> {
 	}
 
 	/**
-	 * Function to generate a <code>T</code>-object of the values.
+	 * Function to generate a {@code T}-object of the values.
 	 * 
-	 * @param x The x-value of the <code>T</code>-object to create.
-	 * @param y The y-value of the <code>T</code>-object to create.
-	 * @return The generated <code>T</code>-object.
+	 * @param x The x-value of the {@code T}-object to create.
+	 * @param y The y-value of the {@code T}-object to create.
+	 * @return The generated {@code T}-object.
 	 * @apiNote Each class that extends this class must implement this.
 	 * @implSpec A sample implementation could look like: <blockquote>
 	 * 
@@ -125,7 +125,7 @@ public abstract class BasicVector<T extends BasicVector<T>> {
 	/**
 	 * Function to negate a vector.
 	 * 
-	 * @return The vector with both x and y-value multiplied by <code>-1</code>.
+	 * @return The vector with both x and y-value multiplied by {@code -1}.
 	 */
 	public T invert() {
 		return this.from(-this.getX(), -this.getY());

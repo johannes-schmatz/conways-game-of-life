@@ -20,31 +20,27 @@ public class BlockPosTest {
 	private final int chunkSize = 16;
 	private final int n = 5;
 	private final int start = -n * chunkSize;
-	
+
 	/**
 	 * Test method for
 	 * {@link local.pixy.conwaysgame.math.BlockPos#chunkBlockIterator()}.
 	 */
 	@Test
 	public void testChunkBlockIterator() {
-		assertEquals(BlockPos.chunkBlockIterator(), BlockPos.chunkBlockIterator(new ChunkPos(0, 0)));
+		Set<BlockPos> notCheckedYet = new HashSet<>();
+
+		assertTrue(notCheckedYet.isEmpty());
 		
-		int x = 3, y = 56;
-		Set<BlockPos> notCheckedYet= new HashSet<>();
-		
-		for(int i = 0; i < this.chunkSize; i++) {
-			for(int j = 0; j < this.chunkSize; j++) {
-				notCheckedYet.add(new BlockPos(x * this.chunkSize + i, y * this.chunkSize + j));
-			}
-		}
-		
+		Iterator<BlockPos> iter = BlockPos.chunkBlockIterator();
+		while (iter.hasNext())
+			notCheckedYet.add(iter.next());
+
 		assertFalse(notCheckedYet.isEmpty());
-		
-		Iterator<BlockPos> iter = BlockPos.chunkBlockIterator(new ChunkPos(x, y));
-		while(iter.hasNext()) {
+
+		iter = BlockPos.chunkBlockIterator(new ChunkPos(0, 0));
+		while (iter.hasNext())
 			notCheckedYet.remove(iter.next());
-		}
-		
+
 		assertTrue(notCheckedYet.isEmpty());
 	}
 
@@ -54,7 +50,25 @@ public class BlockPosTest {
 	 */
 	@Test
 	public void testChunkBlockIteratorChunkPos() {
-		fail("Not yet implemented");
+		int x = 3, y = 56;
+		Set<BlockPos> notCheckedYet = new HashSet<>();
+		
+		assertTrue(notCheckedYet.isEmpty());
+
+		for (int i = 0; i < this.chunkSize; i++) {
+			for (int j = 0; j < this.chunkSize; j++) {
+				notCheckedYet.add(new BlockPos(x * this.chunkSize + i, y * this.chunkSize + j));
+			}
+		}
+
+		assertFalse(notCheckedYet.isEmpty());
+
+		Iterator<BlockPos> iter = BlockPos.chunkBlockIterator(new ChunkPos(x, y));
+		while (iter.hasNext()) {
+			notCheckedYet.remove(iter.next());
+		}
+
+		assertTrue(notCheckedYet.isEmpty());
 	}
 
 	/**
@@ -63,7 +77,13 @@ public class BlockPosTest {
 	 */
 	@Test
 	public void testBlockPos() {
-		fail("Not yet implemented");
+		for(int i = this.start; i < this.testSize; i++) {
+			for(int j = this.start; j < this.testSize; j++) {
+				BlockPos pos = new BlockPos(i, j);
+				assertTrue(i == pos.getX());
+				assertTrue(j == pos.getY());
+			}
+		}
 	}
 
 	/**
@@ -71,7 +91,7 @@ public class BlockPosTest {
 	 */
 	@Test
 	public void testFromIntInt() {
-		for(int x = this.start; x < this.testSize; x++) {
+		for (int x = this.start; x < this.testSize; x++) {
 			for (int y = this.start; y < this.testSize; y++) {
 				assertEquals(new BlockPos(x, y), new BlockPos(-1, 2).from(x, y));
 				assertEquals(new BlockPos(x, y), new BlockPos(2, -1).from(x, y));
@@ -96,19 +116,18 @@ public class BlockPosTest {
 		assertEquals(new BlockPos(0, 15), new BlockPos(0, -1).getBlockPosChunk());
 		assertEquals(new BlockPos(0, 0), new BlockPos(0, -16).getBlockPosChunk());
 		assertEquals(new BlockPos(0, 0), new BlockPos(-16, -16).getBlockPosChunk());
-		
+
 		int x = 0, y = 0;
-		for(int i = this.start; i < this.testSize; i++) {
-			for(int j = this.start; j < this.testSize; j++) {
-				System.out.println(i + " " + j + " " + x + " " + y);
+		for (int i = this.start; i < this.testSize; i++) {
+			for (int j = this.start; j < this.testSize; j++) {
 				assertEquals(new BlockPos(x, y), new BlockPos(i, j).getBlockPosChunk());
-				
-				if(++y == this.chunkSize) {
+
+				if (++y == this.chunkSize) {
 					y = 0;
 				}
 			}
 			y = 0;
-			if(++x == this.chunkSize) {
+			if (++x == this.chunkSize) {
 				x = 0;
 			}
 		}
@@ -137,7 +156,7 @@ public class BlockPosTest {
 			y = -n;
 			for (int j = this.start; j < 100; j++) {
 				assertEquals(new ChunkPos(x, y), new BlockPos(i, j).getChunkPos());
-				
+
 				if (++b == this.chunkSize) {
 					b = 0;
 					y++;
@@ -149,5 +168,4 @@ public class BlockPosTest {
 			}
 		}
 	}
-
 }

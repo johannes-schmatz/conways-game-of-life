@@ -1,60 +1,85 @@
 package local.pixy.conwaysgame.world;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import local.pixy.conwaysgame.block.IBlock;
-import local.pixy.conwaysgame.block.IBlockState;
+import local.pixy.conwaysgame.block.Blocks;
 import local.pixy.conwaysgame.math.BlockPos;
 import local.pixy.conwaysgame.math.ChunkPos;
+import local.pixy.conwaysgame.math.Direction;
 
 /**
  * @author pixy
  *
  */
 public class World implements IWorld {
-	private Map<ChunkPos, Integer> reference = new HashMap<>();
-	private List<IChunk> content = new ArrayList<>();
+	private Map<ChunkPos, IChunk> content = new HashMap<>();
+
 	@Override
-	public IBlock getBlock(BlockPos pos) {
+	public int getBlock(BlockPos pos) {
 		return this.getChunk(pos.getChunkPos()).getBlock(pos);
 	}
 
 	@Override
 	public IChunk getChunk(ChunkPos pos) {
-		if(!this.reference.containsKey(pos))
+		if (!this.content.containsKey(pos))
 			this.setChunk(pos, new Chunk(this, pos));
-		int index = this.reference.get(pos);
-		return this.content.get(index);
+		return this.content.get(pos);
 	}
 
 	@Override
-	public void setBlock(BlockPos pos, IBlockState state) {
-		ChunkPos cpos = pos.getChunkPos();
-		this.getChunk(cpos).setBlock(pos, state);
+	public void setBlock(BlockPos pos, int state) {
+		((Chunk) this.getChunk(pos.getChunkPos())).setBlock(pos, state, false);
 	}
-	
+
 	@Override
 	public void setChunk(ChunkPos pos, IChunk chunk) {
-		this.content.add(chunk);
-		int index = this.content.size() - 1;
-		if(this.reference.containsKey(pos))
-			this.reference.remove(pos);
-		this.reference.put(pos, index);
+		if (this.content.containsKey(pos))
+			this.content.remove(pos);
+		this.content.put(pos, chunk);
 	}
 
 	@Override
 	public void tick() {
-		List<IChunk> currentContent = new ArrayList<>(this.content);
-		
-		currentContent.forEach(chunk -> {
+		Collection<ChunkPos> posCollection = this.content.keySet();
+		List<ChunkPos> posList = new ArrayList<>();
+		posList.addAll(posCollection);
+
+		posList.forEach(pos -> {
+			IChunk chunk = this.content.get(pos);
 			chunk.tick();
-			chunk.tickCalculate();
 		});
-		currentContent.forEach(chunk -> {
-			chunk.tickUpdateState();
-		});
+		Blocks.swapAlphabets();
+	}
+
+	@Override
+	public int countNeightbours(BlockPos pos) {
+		int neightbours = 0;
+		int state = 0;
+		for (Direction i : Direction.directionNoSelf) {
+			state = this.getBlock(pos.offset(i));
+			if (Blocks.isAlive(state))
+				neightbours++;
+			else {
+				if (!Blocks.isAir(state))
+					throw new Blocks.InvalidBlockIdException(pos, i);
+			}
+		}
+		return neightbours;
+	}
+
+	@Override
+	public void updateState(BlockPos pos) {
+		int neightbours = this.countNeightbours(pos);
+		int state = this.getBlock(pos);
+		int nextState = switch (neightbours) {
+		case 2 -> state;
+		case 3 -> Blocks.isAlive(state) ? Blocks.ALIVE : Blocks.NEXT_ALIVE;
+		default -> Blocks.isAlive(state) ? Blocks.NEXT_AIR : Blocks.AIR;
+		};
+		this.setBlock(pos, nextState);
 	}
 }

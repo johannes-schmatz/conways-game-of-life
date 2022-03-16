@@ -1,7 +1,5 @@
 package local.pixy.conwaysgame.world;
 
-import local.pixy.conwaysgame.block.IBlock;
-import local.pixy.conwaysgame.block.IBlockState;
 import local.pixy.conwaysgame.math.BlockPos;
 import local.pixy.conwaysgame.math.ChunkPos;
 
@@ -14,7 +12,7 @@ public interface IWorld {
 	 * @param pos
 	 * @return
 	 */
-	IBlock getBlock(BlockPos pos);
+	int getBlock(BlockPos pos);
 
 	/**
 	 * @param pos
@@ -26,7 +24,7 @@ public interface IWorld {
 	 * @param pos
 	 * @param state
 	 */
-	void setBlock(BlockPos pos, IBlockState state);
+	void setBlock(BlockPos pos, int state);
 
 	/**
 	 * @param pos
@@ -38,4 +36,8 @@ public interface IWorld {
 	 * 
 	 */
 	void tick();
+
+	int countNeightbours(BlockPos pos);
+
+	void updateState(BlockPos pos);
 }

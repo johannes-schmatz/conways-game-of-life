@@ -1,7 +1,5 @@
 package local.pixy.conwaysgame.world;
 
-import local.pixy.conwaysgame.block.IBlock;
-import local.pixy.conwaysgame.block.IBlockState;
 import local.pixy.conwaysgame.math.BlockPos;
 
 /**
@@ -24,7 +22,7 @@ public interface IChunk {
 	 *            internal coordinates.
 	 * @return The block.
 	 */
-	IBlock getBlock(BlockPos pos);
+	int getBlock(BlockPos pos);
 
 	/**
 	 * Gets a block by position. Ignores the {@linkplain LoadLevel}.
@@ -33,7 +31,7 @@ public interface IChunk {
 	 *            internal coordinates.
 	 * @return The block.
 	 */
-	IBlock getBlockNoLoadCheck(BlockPos pos);
+	int getBlockNoLoadCheck(BlockPos pos);
 
 	/**
 	 * Method to get all blocks inside a chunk in a ordered way. To access a block
@@ -42,7 +40,7 @@ public interface IChunk {
 	 * @return All blocks as an array on the x-axis that contains arrays for each
 	 *         y-row of cells.
 	 */
-	IBlock[][] getContent();
+	int[][] getContent();
 
 	/**
 	 * Gets the current load level of the chunk.
@@ -67,7 +65,7 @@ public interface IChunk {
 	 *              coordinates.
 	 * @param state The state of the block.
 	 */
-	void setBlock(BlockPos pos, IBlockState state);
+	void setBlock(BlockPos pos, int state);
 
 	/**
 	 * Sets the load level of the chunk to a different value.
@@ -82,14 +80,5 @@ public interface IChunk {
 	 */
 	void tick();
 
-	/**
-	 * The chunk ticks all blocks once, but only to let the blocks calculate their
-	 * next state.
-	 */
-	void tickCalculate();
-
-	/**
-	 * The chunk ticks all blocks once, to let the blocks update their state.
-	 */
-	void tickUpdateState();
+	void updateLoadLevel();
 }

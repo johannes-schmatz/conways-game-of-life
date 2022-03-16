@@ -2,10 +2,7 @@ package local.pixy.conwaysgame.world;
 
 import java.util.Iterator;
 
-import local.pixy.conwaysgame.block.Block;
-import local.pixy.conwaysgame.block.BlockState;
-import local.pixy.conwaysgame.block.IBlock;
-import local.pixy.conwaysgame.block.IBlockState;
+import local.pixy.conwaysgame.block.Blocks;
 import local.pixy.conwaysgame.math.BlockPos;
 import local.pixy.conwaysgame.math.ChunkPos;
 import local.pixy.conwaysgame.math.Direction;
@@ -16,10 +13,11 @@ import local.pixy.conwaysgame.math.Direction;
  * @author pixy
  */
 public class Chunk implements IChunk {
-	private IBlock[][] content = new Block[SIZE][SIZE];
+	private int[][] content = new int[SIZE][SIZE];
 	private LoadLevel loadLevel = LoadLevel.NOT;
 	private ChunkPos pos;
 	private IWorld world;
+	private int aliveCount = 0;
 
 	/**
 	 * Creates a new chunk.
@@ -33,11 +31,11 @@ public class Chunk implements IChunk {
 	}
 
 	@Override
-	public IBlock getBlock(BlockPos pos) {
+	public int getBlock(BlockPos pos) {
 		pos = pos.getBlockPosChunk();
 		switch (this.loadLevel) {
 		case NOT, BORDER:
-			return new Block(this.world, pos, BlockState.newDefault());
+			return 0;
 		case TICKING, FULL:
 			return this.getBlockNoLoadCheck(pos);
 		default:
@@ -46,20 +44,15 @@ public class Chunk implements IChunk {
 	}
 
 	@Override
-	public IBlock getBlockNoLoadCheck(BlockPos pos) {
+	public int getBlockNoLoadCheck(BlockPos pos) {
 		pos = pos.getBlockPosChunk();
-		IBlock block = this.content[pos.getX()][pos.getY()];
-		if (block == null) {
-			block = new Block(this.world, pos, BlockState.newDefault());
-			this.content[pos.getX()][pos.getY()] = block;
-		}
-		else 
-			System.out.println(pos.toString());
-		return block;
+		int blockId = this.content[pos.getX()][pos.getY()];
+		this.content[pos.getX()][pos.getY()] = blockId;
+		return blockId;
 	}
 
 	@Override
-	public IBlock[][] getContent() {
+	public int[][] getContent() {
 		return this.content;
 	}
 
@@ -70,77 +63,103 @@ public class Chunk implements IChunk {
 
 	@Override
 	public boolean isEmpty() {
-		Iterator<BlockPos> iter = BlockPos.chunkBlockIterator();
-		while (iter.hasNext()) {
-			if (this.getBlockNoLoadCheck(iter.next()).getState().isNot(BlockState.DEAD)) {
-				return false;
-			}
-		}
-		return true;
+		return this.aliveCount == 0;
 	}
 
 	@Override
-	public void setBlock(BlockPos pos, IBlockState state) {
+	public void setBlock(BlockPos pos, int state) {
+		this.setBlock(pos, state, true);
+	}
+	public void setBlock(BlockPos pos, int state, boolean doDebug) {
 		pos = pos.getBlockPosChunk();
 
-		this.content[pos.getX()][pos.getY()] = new Block(this.world, pos, state);
+		this.content[pos.getX()][pos.getY()] = state;
 
-		//this.updateLoadLevel();
+		if(doDebug) {
+			System.out.println("yikes");
+			this.debugPrint();
+		}
+
+		if (state != Blocks.AIR)
+			this.setLoadLevel(LoadLevel.FULL);
+		this.neighbourChunkLoadLevelUpdate();
 	}
 
 	@Override
 	public void setLoadLevel(LoadLevel level) {
 		this.loadLevel = level;
+		this.markDirty();
+	}
+	
+	public void markDirty() {}
+	
+	public void debugPrint() {
+		if (this.pos.getX() != 1 || this.pos.getY() != 1) return;
+		System.out.println("AIR: " + Blocks.AIR + ", ALIVE: " + Blocks.ALIVE + ", NEXT_AIR: " + Blocks.NEXT_AIR + ", NEXT_ALIVE: " + Blocks.NEXT_ALIVE);
+		System.out.println(this.pos.toString());
+		System.out.println("load level set to " + this.loadLevel.toString());
+		for(int i = 0; i < this.content.length; i++) {
+			for(int j = 0; j < this.content[i].length; j++)
+				System.out.print(this.content[i][j]);
+			System.out.println();
+		}
 	}
 
 	@Override
 	public void tick() {
 		this.updateLoadLevel();
+		this.aliveCount = 0;
 
 		if (this.loadLevel.getLevel() >= LoadLevel.TICKING.getLevel()) {
-			Iterator<BlockPos> iter = BlockPos.chunkBlockIterator();
+			System.out.println(this.pos.toString() + " is loaded as ticking!");
+			Iterator<BlockPos> iter = BlockPos.chunkBlockIterator(this.pos);
 			iter.forEachRemaining(pos -> {
-				this.getBlock(pos).tick();
-			});
-		}
-	}
+				if (this.getBlock(pos) == Blocks.ALIVE)
+					this.aliveCount++;
 
-	@Override
-	public void tickCalculate() {
-		if (this.loadLevel.getLevel() >= LoadLevel.TICKING.getLevel()) {
-			Iterator<BlockPos> iter = BlockPos.chunkBlockIterator();
-			iter.forEachRemaining(pos -> {
-				this.getBlock(pos).tickCalculate();
+				this.world.updateState(pos);
 			});
 		}
-	}
-
-	@Override
-	public void tickUpdateState() {
-		if (this.loadLevel.getLevel() >= LoadLevel.TICKING.getLevel()) {
-			Iterator<BlockPos> iter = BlockPos.chunkBlockIterator();
-			iter.forEachRemaining(pos -> {
-				this.getBlock(pos).tickUpdatesState();
-			});
-		}
+		this.debugPrint();
 	}
 
 	@Override
 	public String toString() {
-		return super.toString() + "[x=" + this.pos.getX() + ", y=" + this.pos.getY() + ", ll=" + this.loadLevel.toString() + "]";
+		return super.toString() + "[x=" + this.pos.getX() + ", y=" + this.pos.getY() + ", ll="
+				+ this.loadLevel.toString() + "]";
+	}
+	
+	public void neighbourChunkLoadLevelUpdate() {
+		for(Direction i : Direction.directionNoSelf) {
+			IChunk chunk = this.world.getChunk(this.pos.offset(i));
+			chunk.updateLoadLevel();
+		}
 	}
 
-	private void updateLoadLevel() {
-		if (this.isEmpty()) {
+	@Override
+	public void updateLoadLevel() {
+		if (this.loadLevel != LoadLevel.NOT) {
 			int level, maxLoadLevel = LoadLevel.NOT.getLevel();
 			for (Direction i : Direction.directionNoSelf) {
 				level = this.world.getChunk(this.pos.offset(i)).getLoadLevel().getLevel();
+				//System.out.println("level: " + i.toString() + " has " + level);
 				if (level > maxLoadLevel)
 					maxLoadLevel = level;
 			}
 			this.setLoadLevel(LoadLevel.fromNumber(--maxLoadLevel));
-		} else {
-			this.setLoadLevel(LoadLevel.FULL);
+			//for (Direction i : Direction.directionNoSelf) {
+			//	this.world.getChunk(this.pos.offset(i)).updateLoadLevel();
+			//}
+//		if (this.isEmpty()) {
+//			int level, maxLoadLevel = LoadLevel.NOT.getLevel();
+//			for (Direction i : Direction.directionNoSelf) {
+//				level = this.world.getChunk(this.pos.offset(i)).getLoadLevel().getLevel();
+//				if (level > maxLoadLevel)
+//					maxLoadLevel = level;
+//			}
+//			this.setLoadLevel(LoadLevel.fromNumber(--maxLoadLevel));
+//		} else {
+//			this.setLoadLevel(LoadLevel.FULL);
 		}
 	}
 }

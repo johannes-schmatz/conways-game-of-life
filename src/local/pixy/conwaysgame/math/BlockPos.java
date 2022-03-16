@@ -14,8 +14,8 @@ import local.pixy.conwaysgame.world.Chunk;
  */
 public class BlockPos extends BasicVector<BlockPos> {
 	/**
-	 * Gets a {@linkplain Iterator} for iterating over all blocks inside a square with
-	 * size {@linkplain Chunk#SIZE}.
+	 * Gets a {@linkplain Iterator} for iterating over all blocks inside a square
+	 * with size {@linkplain Chunk#SIZE}.
 	 * 
 	 * @return The iterator.
 	 */
@@ -55,8 +55,9 @@ public class BlockPos extends BasicVector<BlockPos> {
 	}
 
 	/**
-	 * Generates a new {@linkplain BlockPos} instance, that is converted down to only
-	 * contain position within one {@linkplain local.pixy.conwaysgame.world.IChunk}.
+	 * Generates a new {@linkplain BlockPos} instance, that is converted down to
+	 * only contain position within one
+	 * {@linkplain local.pixy.conwaysgame.world.IChunk}.
 	 * 
 	 * @return The generated {@linkplain BlockPos} instance.
 	 */
@@ -66,8 +67,8 @@ public class BlockPos extends BasicVector<BlockPos> {
 	}
 
 	/**
-	 * Generates a {@linkplain ChunkPos} instance, with coordinates converted, so that
-	 * the chunk at 0,0 starts at 0,0.
+	 * Generates a {@linkplain ChunkPos} instance, with coordinates converted, so
+	 * that the chunk at 0,0 starts at 0,0.
 	 * 
 	 * @return The {@linkplain ChunkPos} instance.
 	 */

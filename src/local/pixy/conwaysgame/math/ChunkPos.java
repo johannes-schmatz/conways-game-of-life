@@ -3,8 +3,7 @@ package local.pixy.conwaysgame.math;
 import local.pixy.conwaysgame.world.Chunk;
 
 /**
- * Describes a chunk position, with dimensions {@code Chunk.SIZE} on both
- * axis.
+ * Describes a chunk position, with dimensions {@code Chunk.SIZE} on both axis.
  * 
  * @author pixy
  */
@@ -32,7 +31,8 @@ public class ChunkPos extends BasicVector<ChunkPos> {
 	 * Function to get a absolute block {@linkplain BlockPos} from a relative
 	 * {@linkplain BlockPos} and the {@linkplain ChunkPos} instance.
 	 * 
-	 * @param offset The relative {@linkplain BlockPos} from the origin of the chunk.
+	 * @param offset The relative {@linkplain BlockPos} from the origin of the
+	 *               chunk.
 	 * @return The absolute {@linkplain BlockPos} value of the block.
 	 */
 	public BlockPos toBlockPos(BlockPos offset) {

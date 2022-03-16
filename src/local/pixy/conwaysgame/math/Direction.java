@@ -24,9 +24,8 @@ public enum Direction {
 	 *                 iterates.
 	 */
 	public static void iterate(Consumer<Direction> callback) {
-		for (Direction i : Direction.values()) {
-			if (i != Direction.SELF)
-				callback.accept(i);
+		for (Direction i : Direction.directionNoSelf) {
+			callback.accept(i);
 		}
 	}
 
@@ -59,5 +58,44 @@ public enum Direction {
 		this.y = y;
 		this.offset = new BlockPos(this.x, this.y);
 		this.cOffset = new ChunkPos(this.x, this.y);
+	}
+
+	/**
+	 * Finds a direction based on x and y values. The inputs will be converted to
+	 * either 1, 0 or -1.
+	 * 
+	 * @param x The x value to search.
+	 * @param y The y value to search.
+	 * @return A direction whose x and y values match the positive/zero/negative
+	 *         numbers in x and y.
+	 */
+	public static Direction findDirectionForXY(int x, int y) {
+		x = x != 0 ? x / Math.abs(x) : 0;
+		y = y != 0 ? y / Math.abs(y) : 0;
+		for (Direction i : Direction.values()) {
+			if (i.x == x && i.y == y)
+				return i;
+		}
+		throw new IllegalArgumentException("Direction not found for x = {} and y = {}".formatted(x, y));
+	}
+
+	/**
+	 * Adds a {@linkplain Direction} to another itself, returning the result.
+	 * 
+	 * @param add The {@linkplain Direction} to add.
+	 * @return The result of the addition.
+	 */
+	public Direction add(Direction add) {
+		int x = this.x + add.x;
+		int y = this.y + add.y;
+		return Direction.findDirectionForXY(x, y);
+	}
+
+	/**
+	 * Inverts a {@linkplain Direction}.
+	 * @return A Direction with negated x and y values.
+	 */
+	public Direction invert() {
+		return Direction.findDirectionForXY(-this.x, -this.y);
 	}
 }

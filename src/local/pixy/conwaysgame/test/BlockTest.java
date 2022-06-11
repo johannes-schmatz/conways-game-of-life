@@ -11,7 +11,8 @@ import org.junit.Test;
 public class BlockTest {
 
 	/**
-	 * Test method for {@link local.pixy.conwaysgame.block.Block#Block(local.pixy.conwaysgame.world.IWorld, local.pixy.conwaysgame.math.BlockPos, local.pixy.conwaysgame.block.IBlockState)}.
+	 * Test method for
+	 * {@link local.pixy.conwaysgame.block.Block#Block(local.pixy.conwaysgame.world.IWorld, local.pixy.conwaysgame.math.BlockPos, local.pixy.conwaysgame.block.IBlockState)}.
 	 */
 	@Test
 	public void testBlock() {
@@ -19,7 +20,8 @@ public class BlockTest {
 	}
 
 	/**
-	 * Test method for {@link local.pixy.conwaysgame.block.Block#getNeightbourStates()}.
+	 * Test method for
+	 * {@link local.pixy.conwaysgame.block.Block#getNeightbourStates()}.
 	 */
 	@Test
 	public void testGetNeightbourStates() {
@@ -35,7 +37,8 @@ public class BlockTest {
 	}
 
 	/**
-	 * Test method for {@link local.pixy.conwaysgame.block.Block#setState(local.pixy.conwaysgame.block.IBlockState)}.
+	 * Test method for
+	 * {@link local.pixy.conwaysgame.block.Block#setState(local.pixy.conwaysgame.block.IBlockState)}.
 	 */
 	@Test
 	public void testSetState() {
@@ -59,7 +62,8 @@ public class BlockTest {
 	}
 
 	/**
-	 * Test method for {@link local.pixy.conwaysgame.block.Block#tickUpdatesState()}.
+	 * Test method for
+	 * {@link local.pixy.conwaysgame.block.Block#tickUpdatesState()}.
 	 */
 	@Test
 	public void testTickUpdatesState() {

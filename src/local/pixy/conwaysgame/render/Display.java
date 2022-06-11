@@ -17,7 +17,7 @@ import org.lwjgl.opengl.GL;
  *
  */
 public class Display {
-	private long displayId;
+	private long window;
 	private String title = "LWJGL " + Version.getVersion();
 	private Map<Integer, Boolean> windowHints;
 	private boolean vsync = false;
@@ -48,8 +48,8 @@ public class Display {
 	}
 
 	public void quit() {
-		glfwFreeCallbacks(this.displayId);
-		glfwDestroyWindow(this.displayId);
+		glfwFreeCallbacks(this.window);
+		glfwDestroyWindow(this.window);
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 	}
@@ -66,23 +66,24 @@ public class Display {
 			glfwWindowHint(hint, value ? GLFW_TRUE : GLFW_FALSE);
 		});
 
-		this.displayId = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
+		this.window = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
 
-		if (this.displayId == NULL)
+		if (this.window == NULL)
 			throw new RuntimeException("Failed to create window.");
 
-		glfwMakeContextCurrent(this.displayId);
-		
+		glfwMakeContextCurrent(this.window);
+
 		if (this.vsync)
 			glfwSwapInterval(1);
 
-		glfwShowWindow(this.displayId);
+		glfwShowWindow(this.window);
+		
 		GL.createCapabilities();
 	}
 
 	public void setTitle(String title) {
 		this.title = title;
-		glfwSetWindowTitle(this.displayId, title);
+		glfwSetWindowTitle(this.window, title);
 	}
 
 	public String getTitle() {
@@ -90,14 +91,14 @@ public class Display {
 	}
 
 	public long getDisplayId() {
-		return this.displayId;
+		return this.window;
 	}
 
 	public void setKeyCallback(GLFWKeyCallbackI fun) {
-		glfwSetKeyCallback(this.displayId, fun);
+		glfwSetKeyCallback(this.window, fun);
 	}
 
 	public boolean shouldClose() {
-		return glfwWindowShouldClose(this.displayId);
+		return glfwWindowShouldClose(this.window);
 	}
 }

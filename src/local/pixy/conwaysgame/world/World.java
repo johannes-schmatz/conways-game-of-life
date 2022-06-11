@@ -3,6 +3,7 @@ package local.pixy.conwaysgame.world;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import local.pixy.conwaysgame.block.Blocks;
 import local.pixy.conwaysgame.math.BlockPos;
 import local.pixy.conwaysgame.math.ChunkPos;
 import local.pixy.conwaysgame.math.Direction;
+import local.pixy.conwaysgame.util.Nullable;
 
 /**
  * @author pixy
@@ -20,19 +22,28 @@ public class World implements IWorld {
 
 	@Override
 	public int getBlock(BlockPos pos) {
-		return this.getChunk(pos.getChunkPos()).getBlock(pos);
+		IChunk chunk = this.getChunk(pos.getChunkPos());
+		if (chunk == null)
+			return Blocks.AIR;
+		return chunk.getBlock(pos);
 	}
 
 	@Override
+	@Nullable
 	public IChunk getChunk(ChunkPos pos) {
+		return this.content.get(pos);
+	}
+	
+	@Override
+	public IChunk getChunkNew(ChunkPos pos) {
 		if (!this.content.containsKey(pos))
 			this.setChunk(pos, new Chunk(this, pos));
-		return this.content.get(pos);
+		return this.getChunk(pos);
 	}
 
 	@Override
 	public void setBlock(BlockPos pos, int state) {
-		((Chunk) this.getChunk(pos.getChunkPos())).setBlock(pos, state, false);
+		this.getChunkNew(pos.getChunkPos()).setBlock(pos, state);
 	}
 
 	@Override
@@ -52,6 +63,7 @@ public class World implements IWorld {
 			IChunk chunk = this.content.get(pos);
 			chunk.tick();
 		});
+		
 		Blocks.swapAlphabets();
 	}
 
@@ -59,7 +71,7 @@ public class World implements IWorld {
 	public int countNeightbours(BlockPos pos) {
 		int neightbours = 0;
 		int state = 0;
-		for (Direction i : Direction.directionNoSelf) {
+		for (Direction i : Direction.notSelf) {
 			state = this.getBlock(pos.offset(i));
 			if (Blocks.isAlive(state))
 				neightbours++;
@@ -76,10 +88,33 @@ public class World implements IWorld {
 		int neightbours = this.countNeightbours(pos);
 		int state = this.getBlock(pos);
 		int nextState = switch (neightbours) {
-		case 2 -> state;
+		case 2 -> state == Blocks.PREV_AIR ? Blocks.ALIVE : (state == Blocks.PREV_ALIVE ? Blocks.AIR : state);
 		case 3 -> Blocks.isAlive(state) ? Blocks.ALIVE : Blocks.NEXT_ALIVE;
 		default -> Blocks.isAlive(state) ? Blocks.NEXT_AIR : Blocks.AIR;
 		};
+		if (nextState != 0)
+			System.out.println(pos.toString() + " " + nextState);
 		this.setBlock(pos, nextState);
+	}
+
+	@Override
+	public Iterator<ChunkPos> getChunkIterator() {
+		return this.content.keySet().iterator();
+	}
+	
+	@Override
+	public Iterator<ChunkPos> getChunkCopyIterator() {
+		Map<ChunkPos, IChunk> mapCopy = new HashMap<>(this.content);
+		return mapCopy.keySet().iterator();
+	}
+
+	@Override
+	public void unloadChunk(IChunk chunk) {
+		ChunkPos cpos = chunk.getPos();
+		this.content.remove(cpos);
+	}
+	
+	public Map<ChunkPos, IChunk> getContent(){
+		return this.content;
 	}
 }

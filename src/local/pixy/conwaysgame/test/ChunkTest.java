@@ -1,12 +1,9 @@
 package local.pixy.conwaysgame.test;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import local.pixy.conwaysgame.world.Chunk;
 import local.pixy.conwaysgame.world.LoadLevel;
-import local.pixy.conwaysgame.world.World;
 
 /**
  * @author pixy
@@ -56,7 +53,7 @@ public class ChunkTest {
 	@Test
 	public void testLoadLevel() {
 		Chunk obj = new Chunk(null, null);
-		for(LoadLevel i : LoadLevel.values())
+		for (LoadLevel i : LoadLevel.values())
 			TestUtil.<LoadLevel>testSetGet(obj::setLoadLevel, obj::getLoadLevel, i);
 	}
 

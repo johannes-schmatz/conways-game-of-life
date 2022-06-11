@@ -33,16 +33,22 @@ public enum LoadLevel {
 	/**
 	 * An array containing all {@linkplain LoadLevel}s by integer level.
 	 */
-	private static LoadLevel[] values = { NOT, BORDER, TICKING, FULL };
+	public static LoadLevel[] values = { NOT, BORDER, TICKING, FULL };
 
 	/**
-	 * gets the load level for the loaded value
+	 * Gets the load level for the loaded value. Values below 0 are converted to 0,
+	 * values out of range are converted to the last position.
 	 * 
 	 * @param index The index of the LoadLevel, from {@linkplain LoadLevel#values}
 	 * @return The LoadLevel.
 	 */
 	public static LoadLevel fromNumber(int index) {
-		return LoadLevel.values[index < 0 ? 0 : index];
+		int length = LoadLevel.values.length;
+		if (index < 0)
+			index = 0;
+		if (index >= length)
+			index = length - 1;
+		return LoadLevel.values[index];
 	}
 
 	/**
@@ -66,8 +72,7 @@ public enum LoadLevel {
 	 * @return The calculated LoadLevel.
 	 */
 	public static LoadLevel getLoadLevelLess(LoadLevel level, int amount) {
-		int index = level.getLevel() - amount;
-		return LoadLevel.fromNumber(index < 0 ? 0 : index);
+		return LoadLevel.fromNumber(level.getLevel() - amount);
 	}
 
 	private final int level;

@@ -1,6 +1,7 @@
 package local.pixy.conwaysgame.world;
 
 import local.pixy.conwaysgame.math.BlockPos;
+import local.pixy.conwaysgame.math.ChunkPos;
 
 /**
  * A interface that describes all methods that must be used.
@@ -52,6 +53,13 @@ public interface IChunk {
 	LoadLevel getLoadLevel();
 
 	/**
+	 * Gets the position of the chunk object.
+	 * 
+	 * @return The position as a {@linkplain ChunkPos}.
+	 */
+	ChunkPos getPos();
+
+	/**
 	 * Method to check if the chunk contains any non dead cells.
 	 * 
 	 * @return True if all blocks in the {@linkplain IChunk} are dead.
@@ -79,6 +87,8 @@ public interface IChunk {
 	 * Ticks a chunk. This function must be called 20 times per second.
 	 */
 	void tick();
-
+	
 	void updateLoadLevel();
+	
+	void needsLLCheck();
 }

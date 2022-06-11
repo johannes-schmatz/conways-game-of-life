@@ -68,18 +68,11 @@ public class Chunk implements IChunk {
 
 	@Override
 	public void setBlock(BlockPos pos, int state) {
-		this.setBlock(pos, state, true);
-	}
-	public void setBlock(BlockPos pos, int state, boolean doDebug) {
 		pos = pos.getBlockPosChunk();
 
 		this.content[pos.getX()][pos.getY()] = state;
 
-		if(doDebug) {
-			System.out.println("yikes");
-			this.debugPrint();
-		}
-
+		// TODO: is empty check!
 		if (state != Blocks.AIR)
 			this.setLoadLevel(LoadLevel.FULL);
 		this.neighbourChunkLoadLevelUpdate();
@@ -89,6 +82,7 @@ public class Chunk implements IChunk {
 	public void setLoadLevel(LoadLevel level) {
 		this.loadLevel = level;
 		this.markDirty();
+		System.out.println(this.toString());
 	}
 	
 	public void markDirty() {}
@@ -107,11 +101,12 @@ public class Chunk implements IChunk {
 
 	@Override
 	public void tick() {
-		this.updateLoadLevel();
+		if (this.needsLL)
+			this.updateLoadLevel();
 		this.aliveCount = 0;
 
 		if (this.loadLevel.getLevel() >= LoadLevel.TICKING.getLevel()) {
-			System.out.println(this.pos.toString() + " is loaded as ticking!");
+			//System.out.println(this.pos.toString() + " is loaded as ticking!");
 			Iterator<BlockPos> iter = BlockPos.chunkBlockIterator(this.pos);
 			iter.forEachRemaining(pos -> {
 				if (this.getBlock(pos) == Blocks.ALIVE)
@@ -120,7 +115,7 @@ public class Chunk implements IChunk {
 				this.world.updateState(pos);
 			});
 		}
-		this.debugPrint();
+		//this.debugPrint();
 	}
 
 	@Override
@@ -130,23 +125,58 @@ public class Chunk implements IChunk {
 	}
 	
 	public void neighbourChunkLoadLevelUpdate() {
-		for(Direction i : Direction.directionNoSelf) {
-			IChunk chunk = this.world.getChunk(this.pos.offset(i));
-			chunk.updateLoadLevel();
+		for(Direction i : Direction.notSelf) {
+			IChunk chunk = this.world.getChunkNew(this.pos.offset(i));
+			//chunk.updateLoadLevel();
+			chunk.needsLLCheck();
 		}
 	}
 
+	private boolean needsLL = false;
+	public void needsLLCheck() {
+		this.needsLL = true;
+	}
+	
 	@Override
 	public void updateLoadLevel() {
-		if (this.loadLevel != LoadLevel.NOT) {
-			int level, maxLoadLevel = LoadLevel.NOT.getLevel();
-			for (Direction i : Direction.directionNoSelf) {
-				level = this.world.getChunk(this.pos.offset(i)).getLoadLevel().getLevel();
-				//System.out.println("level: " + i.toString() + " has " + level);
-				if (level > maxLoadLevel)
-					maxLoadLevel = level;
+		int smallestLL = LoadLevel.NOT.getLevel() - 1;
+		int level;
+		int maxLoadLevel = smallestLL;
+		for (Direction i : Direction.notSelf) {
+			IChunk chunk = this.world.getChunk(this.pos.offset(i));
+			if (chunk == null)
+				continue;
+			level = chunk.getLoadLevel().getLevel();
+			if (level > maxLoadLevel)
+				maxLoadLevel = level;
+		}
+		if (maxLoadLevel > smallestLL) {
+			LoadLevel newLoadLevel = LoadLevel.fromNumber(--maxLoadLevel);
+			if (!this.loadLevel.equals(newLoadLevel)) {
+				this.loadLevel = newLoadLevel;
+				this.neighbourChunkLoadLevelUpdate();
 			}
-			this.setLoadLevel(LoadLevel.fromNumber(--maxLoadLevel));
+		} else {
+			this.world.unloadChunk(this);
+		}
+		/*
+		//if (this.loadLevel != LoadLevel.NOT) {
+			
+				//System.out.println("level: " + i.toString() + " has " + level);
+				
+			}
+			 
+			
+			if (this.loadLevel != newLoadLevel) {
+				this.setLoadLevel(newLoadLevel);
+				for (Direction i : Direction.directionNoSelf) {
+					IChunk chunk = this.world.getChunk(this.pos.offset(i));
+					if (chunk.getLoadLevel().getLevel() < this.getLoadLevel().getLevel() - 1) {
+				//		chunk.updateLoadLevel();
+					}
+				}*/
+			//}
+			
 			//for (Direction i : Direction.directionNoSelf) {
 			//	this.world.getChunk(this.pos.offset(i)).updateLoadLevel();
 			//}
@@ -160,6 +190,11 @@ public class Chunk implements IChunk {
 //			this.setLoadLevel(LoadLevel.fromNumber(--maxLoadLevel));
 //		} else {
 //			this.setLoadLevel(LoadLevel.FULL);
-		}
+		//}
+	}
+
+	@Override
+	public ChunkPos getPos() {
+		return this.pos;
 	}
 }

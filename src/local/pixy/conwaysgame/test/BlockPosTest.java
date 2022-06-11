@@ -30,7 +30,7 @@ public class BlockPosTest {
 		Set<BlockPos> notCheckedYet = new HashSet<>();
 
 		assertTrue(notCheckedYet.isEmpty());
-		
+
 		Iterator<BlockPos> iter = BlockPos.chunkBlockIterator();
 		while (iter.hasNext())
 			notCheckedYet.add(iter.next());
@@ -52,7 +52,7 @@ public class BlockPosTest {
 	public void testChunkBlockIteratorChunkPos() {
 		int x = 3, y = 56;
 		Set<BlockPos> notCheckedYet = new HashSet<>();
-		
+
 		assertTrue(notCheckedYet.isEmpty());
 
 		for (int i = 0; i < this.chunkSize; i++) {
@@ -77,8 +77,8 @@ public class BlockPosTest {
 	 */
 	@Test
 	public void testBlockPos() {
-		for(int i = this.start; i < this.testSize; i++) {
-			for(int j = this.start; j < this.testSize; j++) {
+		for (int i = this.start; i < this.testSize; i++) {
+			for (int j = this.start; j < this.testSize; j++) {
 				BlockPos pos = new BlockPos(i, j);
 				assertTrue(i == pos.getX());
 				assertTrue(j == pos.getY());

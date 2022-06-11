@@ -57,7 +57,7 @@ public class BasicVectorTest {
 		TestUtil.consumer3dimUser((x, y, n) -> {
 			Vector v1 = new Vector(x, y);
 			Vector v2 = v1.add(n);
-			
+
 			assertEquals(x + n, v2.getX());
 			assertEquals(y + n, v2.getY());
 		});
@@ -73,7 +73,7 @@ public class BasicVectorTest {
 			Vector v1 = new Vector(x, y);
 			Vector v2 = new Vector(i, j);
 			Vector v3 = v1.add(v2);
-			
+
 			assertEquals(x + i, v3.getX());
 			assertEquals(y + j, v3.getY());
 		});
@@ -85,12 +85,12 @@ public class BasicVectorTest {
 	@Test
 	public void testDivideInt() {
 		TestUtil.consumer3dimUser((x, y, n) -> {
-			if(n == 0)
+			if (n == 0)
 				return;
-			
+
 			Vector v1 = new Vector(x, y);
 			Vector v2 = v1.divide(n);
-			
+
 			assertEquals((int) x / n, v2.getX());
 			assertEquals((int) y / n, v2.getY());
 		});
@@ -103,13 +103,13 @@ public class BasicVectorTest {
 	@Test
 	public void testDivideT() {
 		TestUtil.consumer4dimUser((x, y, i, j) -> {
-			if(i == 0 || j == 0)
+			if (i == 0 || j == 0)
 				return;
-			
+
 			Vector v1 = new Vector(x, y);
 			Vector v2 = new Vector(i, j);
 			Vector v3 = v1.divide(v2);
-			
+
 			assertEquals((int) x / i, v3.getX());
 			assertEquals((int) y / j, v3.getY());
 		});
@@ -121,19 +121,20 @@ public class BasicVectorTest {
 	 */
 	@Test
 	public void testEqualsObject() {
-		int x = 2022, y = 598;
-		Vector v1 = new Vector(x--, y--);
-		Vector v2 = new Vector(x++, y++);
-		Vector v3 = new Vector(++x, ++y);
-		Vector v4 = new Vector(--x, --y);
-		assertFalse(v1.equals(null));
-		assertFalse(v2.equals(null));
-		assertFalse(v3.equals(null));
-		
-		assertFalse(v1.equals(v2));
-		assertFalse(v1.equals(v3));
-		assertTrue(v1.equals(v4));
-		assertFalse(v1 == v4);
+		TestUtil.consumer2dimUser((x, y) -> {
+			Vector v1 = new Vector(x--, y--);
+			Vector v2 = new Vector(x++, y++);
+			Vector v3 = new Vector(++x, ++y);
+			Vector v4 = new Vector(--x, --y);
+			assertFalse(v1.equals(null));
+			assertFalse(v2.equals(null));
+			assertFalse(v3.equals(null));
+
+			assertFalse(v1.equals(v2));
+			assertFalse(v1.equals(v3));
+			assertTrue(v1.equals(v4));
+			assertFalse(v1 == v4);
+		});
 	}
 
 	/**
@@ -176,12 +177,12 @@ public class BasicVectorTest {
 	@Test
 	public void testModuloInt() {
 		TestUtil.consumer3dimUser((x, y, n) -> {
-			if(n == 0)
+			if (n == 0)
 				return;
-			
+
 			Vector v1 = new Vector(x, y);
 			Vector v2 = v1.modulo(n);
-			
+
 			assertEquals(x % n, v2.getX());
 			assertEquals(y % n, v2.getY());
 		});
@@ -194,13 +195,13 @@ public class BasicVectorTest {
 	@Test
 	public void testModuloT() {
 		TestUtil.consumer4dimUser((x, y, i, j) -> {
-			if(i == 0 || j == 0)
+			if (i == 0 || j == 0)
 				return;
-			
+
 			Vector v1 = new Vector(x, y);
 			Vector v2 = new Vector(i, j);
 			Vector v3 = v1.modulo(v2);
-			
+
 			assertEquals(x % i, v3.getX());
 			assertEquals(y % j, v3.getY());
 		});
@@ -215,7 +216,7 @@ public class BasicVectorTest {
 		TestUtil.consumer3dimUser((x, y, n) -> {
 			Vector v1 = new Vector(x, y);
 			Vector v2 = v1.multiply(n);
-			
+
 			assertEquals(x * n, v2.getX());
 			assertEquals(y * n, v2.getY());
 		});
@@ -231,7 +232,7 @@ public class BasicVectorTest {
 			Vector v1 = new Vector(x, y);
 			Vector v2 = new Vector(i, j);
 			Vector v3 = v1.multiply(v2);
-			
+
 			assertEquals(x * i, v3.getX());
 			assertEquals(y * j, v3.getY());
 		});
@@ -243,13 +244,14 @@ public class BasicVectorTest {
 	 */
 	@Test
 	public void testOffset() {
-		int x = 3078, y = 98723;
-		Vector v1 = new Vector(x, y);
-		Vector v2;
-		for(Direction i : Direction.values()) {
-			v2 = v1.offset(i);
-			assertEquals(x + i.x, v2.getX());
-			assertEquals(y + i.y, v2.getY());
-		}
+		TestUtil.consumer2dimUser((x, y) -> {
+			Vector v1 = new Vector(x, y);
+			Vector v2;
+			for (Direction i : Direction.values()) {
+				v2 = v1.offset(i);
+				assertEquals(x + i.x, v2.getX());
+				assertEquals(y + i.y, v2.getY());
+			}
+		});
 	}
 }

@@ -11,7 +11,8 @@ import org.junit.Test;
 public class ChunkPosTest {
 
 	/**
-	 * Test method for {@link local.pixy.conwaysgame.math.ChunkPos#ChunkPos(int, int)}.
+	 * Test method for
+	 * {@link local.pixy.conwaysgame.math.ChunkPos#ChunkPos(int, int)}.
 	 */
 	@Test
 	public void testChunkPos() {
@@ -27,7 +28,8 @@ public class ChunkPosTest {
 	}
 
 	/**
-	 * Test method for {@link local.pixy.conwaysgame.math.ChunkPos#toBlockPos(local.pixy.conwaysgame.math.BlockPos)}.
+	 * Test method for
+	 * {@link local.pixy.conwaysgame.math.ChunkPos#toBlockPos(local.pixy.conwaysgame.math.BlockPos)}.
 	 */
 	@Test
 	public void testToBlockPosBlockPos() {

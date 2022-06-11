@@ -24,7 +24,7 @@ public enum Direction {
 	 *                 iterates.
 	 */
 	public static void iterate(Consumer<Direction> callback) {
-		for (Direction i : Direction.directionNoSelf) {
+		for (Direction i : Direction.notSelf) {
 			callback.accept(i);
 		}
 	}
@@ -32,7 +32,7 @@ public enum Direction {
 	/**
 	 * All directions without {@linkplain Direction#SELF} in an array.
 	 */
-	public static final Direction[] directionNoSelf = { NORTHWEST, NORTH, NORTHEAST, WEST, EAST, SOUTHWEST, SOUTH,
+	public static final Direction[] notSelf = { NORTHWEST, NORTH, NORTHEAST, WEST, EAST, SOUTHWEST, SOUTH,
 			SOUTHEAST };
 
 	/**

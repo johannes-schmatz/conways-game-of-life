@@ -11,7 +11,8 @@ import org.junit.Test;
 public class WorldTest {
 
 	/**
-	 * Test method for {@link local.pixy.conwaysgame.world.World#getBlock(local.pixy.conwaysgame.math.BlockPos)}.
+	 * Test method for
+	 * {@link local.pixy.conwaysgame.world.World#getBlock(local.pixy.conwaysgame.math.BlockPos)}.
 	 */
 	@Test
 	public void testGetBlock() {
@@ -19,7 +20,8 @@ public class WorldTest {
 	}
 
 	/**
-	 * Test method for {@link local.pixy.conwaysgame.world.World#getChunk(local.pixy.conwaysgame.math.ChunkPos)}.
+	 * Test method for
+	 * {@link local.pixy.conwaysgame.world.World#getChunk(local.pixy.conwaysgame.math.ChunkPos)}.
 	 */
 	@Test
 	public void testGetChunk() {
@@ -27,7 +29,8 @@ public class WorldTest {
 	}
 
 	/**
-	 * Test method for {@link local.pixy.conwaysgame.world.World#setBlock(local.pixy.conwaysgame.math.BlockPos, local.pixy.conwaysgame.block.IBlockState)}.
+	 * Test method for
+	 * {@link local.pixy.conwaysgame.world.World#setBlock(local.pixy.conwaysgame.math.BlockPos, local.pixy.conwaysgame.block.IBlockState)}.
 	 */
 	@Test
 	public void testSetBlock() {
@@ -35,7 +38,8 @@ public class WorldTest {
 	}
 
 	/**
-	 * Test method for {@link local.pixy.conwaysgame.world.World#setChunk(local.pixy.conwaysgame.math.ChunkPos, local.pixy.conwaysgame.world.IChunk)}.
+	 * Test method for
+	 * {@link local.pixy.conwaysgame.world.World#setChunk(local.pixy.conwaysgame.math.ChunkPos, local.pixy.conwaysgame.world.IChunk)}.
 	 */
 	@Test
 	public void testSetChunk() {

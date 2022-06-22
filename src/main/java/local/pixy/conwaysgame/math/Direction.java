@@ -76,7 +76,7 @@ public enum Direction {
 			if (i.x == x && i.y == y)
 				return i;
 		}
-		throw new IllegalArgumentException("Direction not found for x = {} and y = {}".formatted(x, y));
+		throw new IllegalArgumentException("Direction not found for x = " + x + " and y = " + y);
 	}
 
 	/**

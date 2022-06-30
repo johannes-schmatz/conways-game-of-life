@@ -14,11 +14,9 @@ import java.util.List;
 import local.pixy.conwaysgame.block.Blocks;
 import local.pixy.conwaysgame.math.BlockPos;
 import local.pixy.conwaysgame.math.Direction;
-import local.pixy.conwaysgame.render.BallRenderThread;
 import local.pixy.conwaysgame.render.ClientRenderThread;
-import local.pixy.conwaysgame.world.IWorld;
-import local.pixy.conwaysgame.world.World;
-import local.pixy.conwaysgame.world.BallWorld;
+import local.pixy.conwaysgame.render.WorldRenderThread;
+import local.pixy.conwaysgame.world.*;
 
 /**
  * @author pixy
@@ -32,11 +30,15 @@ public class Main {
 	@SuppressWarnings("javadoc")
 	public static void main(String[] args) {
 		//Main.main1(args);
-		Main.main_ball(args);
+			//Main.main_ball(args);
+		Main.main_gball(args);
 	}
-	
-	public static void main_ball(String[] args) {
-		BallMain main = new BallMain();
+
+
+
+
+	public static void main_gball(String[] args) {
+		GravityBallMain main = new GravityBallMain();
 		main.main();
 	}
 
@@ -195,26 +197,25 @@ public class Main {
 			System.out.println();
 		}
 	}
-	
-	static class BallMain {
-		private int mspt = 100;
-		private BallWorld world = new BallWorld(mspt);
-		private BallRenderThread renderer = new BallRenderThread(this.world);
-		private Thread render = new Thread(null, this.renderer, "render_thread");
-		public BallMain() {
-			this.render.start();
-		}
-		
-		public void main() {
-			int i = -1;
-			while(this.render.getState() != Thread.State.TERMINATED && (i == -1 || i-- > 0)) {
-				world.tick();
-				try {
-					Thread.sleep((long) (mspt));
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+
+		static class GravityBallMain {
+				private final int mspt = 100;
+				private final IEntityWorld world = new GravityWorld(mspt);//BallWorld(mspt);
+				private final WorldRenderThread renderer = new WorldRenderThread(this.world);
+				private final Thread render = new Thread(null, this.renderer, "render_thread");
+				public GravityBallMain() {
+						this.render.start();
 				}
-			}
+
+				public void main() {
+						while(this.render.getState() != Thread.State.TERMINATED) {
+								world.tick();
+								try {
+										Thread.sleep(mspt);
+								} catch (InterruptedException e) {
+										e.printStackTrace();
+								}
+						}
+				}
 		}
-	}
 }

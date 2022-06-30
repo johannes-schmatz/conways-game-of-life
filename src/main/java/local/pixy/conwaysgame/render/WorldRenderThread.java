@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import local.pixy.conwaysgame.world.IEntityWorld;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL11;
@@ -20,11 +21,11 @@ import local.pixy.conwaysgame.world.BallWorld;
  * @author pixy
  *
  */
-public class BallRenderThread implements Runnable {
+public class WorldRenderThread implements Runnable {
 	private Display display;
-	private BallWorld world;
+	private IEntityWorld world;
 
-	public BallRenderThread(BallWorld world) {
+	public WorldRenderThread(IEntityWorld world) {
 		this.world = world;
 	}
 
@@ -81,8 +82,7 @@ public class BallRenderThread implements Runnable {
 		
 		this.world.prerender(width, height);
 
-		int i = 0;
-		while (!this.display.shouldClose() && i < 100) {
+		while (!this.display.shouldClose()) {
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			glPushMatrix();

@@ -2,55 +2,17 @@ package local.pixy.conwaysgame.world;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import local.pixy.conwaysgame.util.ColorUtils;
 
-import org.joml.Vector2d;
-import org.joml.Vector3i;
-
-import org.lwjgl.opengl.GL11;
-
-public class BallWorld {
-	private List<Ball> entities;
-	public final double delta_t;
-	private double maxs = 0d;
+public class BallWorld extends AbstractWorld implements IEntityWorld {
+	private double maxs = 100d;
 	
 	public BallWorld(int mspt){
-		this.entities = new ArrayList<>();
-		
-		this.delta_t = (double) mspt / 1000d;
-		this.addBall(50, 100, 0, 0, 1, 0xFF0000);
-		this.addBall(60, 100, -5, 50, 2, 0x00FF00);
-		this.addBall(70, 100, -20, -20, 3, 0x0000FF);
-	}
-	
-	private void addBall(double s_0x, double s_0y, double v_0x, double v_0y, double m, int color) {
-		int r = ((color >> 16) % 256) / 2;
-		int g = ((color >> 8) % 256) / 2;
-		int b = (color % 256) / 2;
-		if (r > 127 || g > 127 || b > 127)
-			throw new IllegalArgumentException("r = " + r + "; g = " + g + "; b = "+ b + "; of of them bigger than 127!!! openGL wants them to be below that!");
-		this.entities.add(
-				new Ball(
-						this.delta_t,
-						new Vector2d(s_0x, s_0y),
-						new Vector2d(v_0x, v_0y),
-						new Vector3i(r, g, b),
-						m
-				)
-		);
-		
-		if(s_0y > this.maxs)
-			this.maxs = s_0y;
-	}
-	
-	public synchronized void tick() {
-		for(Ball i : this.entities) {
-			i.tick();
-		}
+		super(mspt);
+
+		addBall(50, 100, 0, 0, 1, 0xFF0000);
+		addBall(60, 100, -5, 50, 2, 0x00FF00);
+		addBall(70, 100, -20, -20, 3, 0x0000FF);
 	}
 	
 	private double aspectRatio = 0d;
@@ -62,7 +24,8 @@ public class BallWorld {
 	private double ballSizeY = 0d;
 	private double mppxx = 0d;
 	private double mppxy = 0d;
-	
+
+	@Override
 	public void prerender(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -85,7 +48,8 @@ public class BallWorld {
 		
 		this.ballSizeX /= 4;
 	}
-	
+
+	@Override
 	public void render() {
 		{
 			glColor3d(64, 64, 0);
@@ -108,10 +72,28 @@ public class BallWorld {
 		}
 		
 		glTranslated(this.wallWidth, this.floorHeight, 0);
+
 		glPushMatrix();
-		for(Ball i : this.entities) {
-			i.render(this.mppxx, this.mppxy, this.ballSizeX, this.ballSizeY);
+		glBegin(GL_QUADS);
+
+		for (IEntity i : entities) {
+			double x = i.getPos().x * mppxx;
+			double y = i.getPos().y * mppxy;
+
+			if (x < 0d)
+				x = 0d;
+			if (y < 0d)
+				y = 0d;
+
+			ColorUtils.setOpenGLColorState(i.getColor());
+
+			glVertex2d(x - ballSizeX, y);
+			glVertex2d(x + ballSizeX, y);
+			glVertex2d(x + ballSizeX, y + ballSizeY);
+			glVertex2d(x - ballSizeX, y + ballSizeY);
 		}
+
+		glEnd();
 		glPopMatrix();
 	}
 }
